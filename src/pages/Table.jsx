@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -14,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import React, { useState, useEffect } from 'react';
 
 const useRowStyles = makeStyles({
   root: {
@@ -23,24 +23,9 @@ const useRowStyles = makeStyles({
   },
 });
 
-function createData(posicao, nome, pontuacao) {
-  return {
-    posicao,
-    nome,
-    pontuacao,
-    history: [
-      { data: '2020-01-05', pontuacao: '12' },
-      { data: '2020-01-05', pontuacao: '16' },
-      { data: '2020-01-05', pontuacao: '17' },
-      { data: '2020-01-05', pontuacao: '18' },
-      { data: '2020-01-05', pontuacao: '16' },
-    ],
-  };
-}
-
 function Row(props) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const classes = useRowStyles();
 
   return (
@@ -62,7 +47,7 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
-                Historico
+                Histórico
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -92,31 +77,55 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbs: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
     history: PropTypes.arrayOf(
       PropTypes.shape({
-        amount: PropTypes.number.isRequired,
-        customerId: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
+        pontuacao: PropTypes.number.isRequired,
+        data: PropTypes.string.isRequired,
       }),
     ).isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    protein: PropTypes.number.isRequired,
+    nome: PropTypes.string.isRequired,
+    pontuacao: PropTypes.number.isRequired,
+    posicao: PropTypes.number.isRequired,
   }).isRequired,
 };
 
-const rows = [
-  createData(1, 'Arthur', 60),
-  createData(2, 'Dylan', 59),
-  createData(3, 'Gabriel', 55),
-  createData(4, 'Rica', 40),
-  createData(5, 'RenêRoots', 3),
-];
-
 export default function Ligas() {
+  const [rows, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const urlBase = "https://poke-liga-backend.vercel.app/liga";
+
+  useEffect(() => {
+    fetch(urlBase)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!rows) {
+    return <div>No data available</div>;
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
