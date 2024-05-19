@@ -35,7 +35,7 @@ function Row(props) {
           {row.posicao}
         </TableCell>
         <TableCell align="left">{row.nome}</TableCell>
-        <TableCell align="right">{row.pontuacao}</TableCell>
+        <TableCell align="right">{row.pontuacaoTotal}</TableCell>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -62,7 +62,7 @@ function Row(props) {
                       <TableCell component="th" scope="row">
                         {historyRow.data}
                       </TableCell>
-                      <TableCell align="right">{historyRow.pontuacao}</TableCell>
+                      <TableCell align="right">{historyRow.pontos}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
