@@ -7,12 +7,12 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import  logo from '../assets/logo.jpg';
+import logo from '../assets/pokeloja.jpg';
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
+    width: 275,
   },
   title: {
     fontSize: 14,
@@ -25,6 +25,18 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingTop: '10px',
+  },  
+  logo: {
+    marginTop: 5,
+    width: '100%', 
+    height: 'auto',
+    verticalAlign: 'middle',
+  },
+  statusTrue: {
+    color: 'red', 
+  },
+  statusFalse: {
+    color: 'green', 
   },
 });
 
@@ -36,17 +48,18 @@ function CardLiga({ organizador, descricao, tipo, dataInicio, dataFim, status, i
     return navigate("/liga/" + id);
   }
 
+  const getStatusColorClass = () => {
+    return status === 'Finalizada' ? classes.statusTrue : classes.statusFalse;
+  }
+
   return (
     <div className={classes.container}>
       <Button onClick={handleClick}>
         <Card className={classes.root} variant="outlined">
           <CardContent>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <img src={logo} alt=""/>
+            <img src={logo} alt="" className={classes.logo}/>
           </IconButton>
-            {/* <Typography className={classes.title} color="textSecondary" gutterBottom>
-              {organizador}
-            </Typography> */}
             <Typography variant="h5" component="h2">
               {descricao}
             </Typography>
@@ -56,12 +69,9 @@ function CardLiga({ organizador, descricao, tipo, dataInicio, dataFim, status, i
             <Typography variant="body2" component="p">
               De {dataInicio} a {dataFim}
             </Typography>
-            <Typography className={classes.pos} color="textSecondary">
-              Status: {status}
-            </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small">{status}</Button>
+          <Button size="small" className={getStatusColorClass()}>{status}</Button>
           </CardActions>
         </Card>
       </Button>

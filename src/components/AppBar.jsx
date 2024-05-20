@@ -26,12 +26,15 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     height: 64,
+    justifyContent: 'center', // Centraliza o conteúdo horizontalmente
   },
   logo: {
     marginTop: 5,
     width: 50, 
-    height: 'auto', 
+    height: 'auto',
+    verticalAlign: 'middle', // Adicionando esta linha
   },
+  
 }));
 
 export default function ButtonAppBar() {
