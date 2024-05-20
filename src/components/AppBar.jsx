@@ -3,10 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import  logo from '../assets/logo.jpg'
+import  IconePokeliga from '../assets/pokeliga.png';
+import { Link } from 'react-router-dom';
+import Icon from '@material-ui/core/Icon';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +15,22 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
+    marginLeft: 15,
     flexGrow: 1,
+  },
+  inicio: {
+    marginLeft: 15,
+    flexGrow: 1,
+    color: 'white',
+    textDecoration: 'none'
+  },
+  appBar: {
+    height: 64,
+  },
+  logo: {
+    marginTop: 5,
+    width: 50, 
+    height: 'auto', 
   },
 }));
 
@@ -25,15 +39,15 @@ export default function ButtonAppBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <img src={logo} alt=""/>
-          </IconButton>
+            <img src={IconePokeliga} alt=""className={classes.logo}/>
           <Typography variant="h6" className={classes.title}>
-            Liga Abril / Maio
+            PokeLiga
           </Typography>
-          {/* <Button color="inherit">Login</Button> */}
+          <Typography variant="h6" >
+            <Link to="/" className={classes.inicio}>Inicio</Link>
+          </Typography>
         </Toolbar>
       </AppBar>
     </div>

@@ -1,15 +1,14 @@
-import { useState } from 'react'
 import Table from './pages/Table'
-import AppBar from './pages/AppBar'
-
+import AppBar from './components/AppBar'
+import React from 'react';
+import { Outlet } from 'react-router-dom'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div>
       <AppBar/>
-      <Table/>
+      <Outlet/>
     </div>
   )
 }

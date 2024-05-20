@@ -14,6 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import React, { useState, useEffect } from 'react';
+import {useParams} from "react-router-dom";
 
 const useRowStyles = makeStyles({
   root: {
@@ -93,8 +94,9 @@ export default function Ligas() {
   const [rows, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {id} = useParams();
 
-  const urlBase = "https://poke-liga-backend.vercel.app/liga";
+  const urlBase = "https://poke-liga-backend.vercel.app/liga/" + id;
 
   useEffect(() => {
     fetch(urlBase)
