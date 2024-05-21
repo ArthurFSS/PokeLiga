@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CardLiga from "../components/CardLiga";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 
 const Home = () => {
     const [ligas, setLigas] = useState([]);
@@ -27,7 +29,7 @@ const Home = () => {
     }, []);
   
     if (loading) {
-      return <div>Loading...</div>;
+      return <LoadingSpinner/>;
     }
   
     if (error) {

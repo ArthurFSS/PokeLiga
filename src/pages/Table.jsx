@@ -15,6 +15,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import React, { useState, useEffect } from 'react';
 import {useParams} from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const useRowStyles = makeStyles({
   root: {
@@ -117,7 +118,7 @@ export default function Ligas() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner/>;
   }
 
   if (error) {
