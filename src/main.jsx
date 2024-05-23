@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from './pages/Home';
 import Rules from './pages/Rules';
 import App from './App';
+import Uploader from './pages/Uploader';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "/liga/:id",
         element: <Table/>
+      },
+      {
+        path: "/upload",
+        element: <Uploader/>
       },
     ]
   }
