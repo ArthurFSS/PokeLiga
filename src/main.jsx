@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Rules from './pages/Rules';
 import App from './App';
 import Uploader from './pages/Uploader';
+import TableGlc from './pages/TableGlc';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/upload",
         element: <Uploader/>
+      },
+      {
+        path: "/ligaGlc/:id",
+        element: <TableGlc/>
       },
     ]
   }

@@ -45,6 +45,9 @@ function CardLiga({ organizador, descricao, tipo, dataInicio, dataFim, status, i
   const navigate = useNavigate();
 
   const handleClick = () => {
+    if ( tipo ==='GLC' ){
+      return navigate("/ligaGlc/" + id);
+    }
     return navigate("/liga/" + id);
   }
 
