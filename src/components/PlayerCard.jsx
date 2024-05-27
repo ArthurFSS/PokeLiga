@@ -13,15 +13,15 @@ import energy_colorless from '../assets/energy_colorless.png';
 import energy_gray from '../assets/energy_gray.png';
 
 const badges = [
-  { id: 2, type:'Fire', active: false, imageUrl: energy_fire},
   { id: 1, type:'Water', active: false, imageUrl: energy_water},
+  { id: 2, type:'Fire', active: false, imageUrl: energy_fire},
   { id: 3, type:'Grass', active: false , imageUrl: energy_grass},
-  { id: 9, type:'Dragon', active: false, imageUrl: energy_dragon},
+  { id: 4, type:'Eletric', active: false, imageUrl: energy_eletric},
   { id: 5, type:'Psich', active: false, imageUrl: energy_psich},
+  { id: 6, type:'Fight', active: false, imageUrl: energy_fight},
   { id: 7, type:'Dark', active: false, imageUrl: energy_dark},
   { id: 8, type:'Metal', active: false, imageUrl: energy_metal},
-  { id: 6, type:'Fight', active: false, imageUrl: energy_fight},
-  { id: 4, type:'Eletric', active: false, imageUrl: energy_eletric},
+  { id: 9, type:'Dragon', active: false, imageUrl: energy_dragon},
   { id: 10, type:'Colorless', active: false, imageUrl: energy_colorless},
 ];
 
