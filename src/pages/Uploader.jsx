@@ -3,6 +3,20 @@ import axios from 'axios';
 import { Select, MenuItem, FormControl, InputLabel, Typography } from '@material-ui/core';
 import LoadingSpinner from "../components/LoadingSpinner";
 
+
+const decksGLC = [
+    {id: 1, tipo: 'Agua'},
+    {id: 2, tipo: 'Fogo'},
+    {id: 3, tipo: 'Planta'},
+    {id: 4, tipo: 'Eletrico'},
+    {id: 5, tipo: 'Psiquico'},
+    {id: 6, tipo: 'Lutador'},
+    {id: 7, tipo: 'Noturno'},
+    {id: 8, tipo: 'Metal'},
+    {id: 9, tipo: 'Dragao'},
+    {id: 10, tipo: 'Normal'}
+]
+
 function formatPlayers(playersData) {
     return playersData.map(player => {
         return {
@@ -12,6 +26,43 @@ function formatPlayers(playersData) {
             birthdate: player.birthdate['#text']
         };
     });
+}
+
+function formatStandings(inputJson, data, liga) {
+    // Verifica se inputJson e inputJson.pod existem e são arrays
+    if (!inputJson || !Array.isArray(inputJson.pod)) {
+        throw new TypeError("inputJson.pod is not an array");
+    }
+
+    // Inicializa um array vazio para armazenar os jogadores no novo formato
+    const transformedPlayers = [];
+
+    // Percorre cada item do array "pod" no JSON de entrada
+    inputJson.pod.forEach(podItem => {
+        const category = podItem['@attributes'].category;
+
+        // Verifica se podItem.player existe e é um array
+        if (Array.isArray(podItem.player)) {
+            // Percorre cada jogador no array "player" do pod atual
+            podItem.player.forEach(player => {
+                const id = player['@attributes'].id;
+                const place = player['@attributes'].place;
+
+                // Cria um novo objeto com os dados transformados
+                const transformedPlayer = {
+                    id: id,
+                    place: place,
+                    category: category,
+                    data: data,
+                    liga: liga
+                };
+
+                // Adiciona o novo objeto ao array de jogadores transformados
+                transformedPlayers.push(transformedPlayer);
+            });
+        }
+    });
+    return  transformedPlayers;
 }
 
 function transformarDados(dados, ligaSelecionada) {
@@ -60,11 +111,13 @@ const Uploader = () => {
     const [loadingPlayers, setLoadingPlayers] = useState(false);
     const [loadingMatches, setLoadingMatches] = useState(false);
     const [dataAtual, setDataAtual] = useState('');
+    const [standings, setStandings] = useState([]);
+    const [deckSelecionado, setDeckSelecionado] = useState({id: 0, tipo: ''});
 
     useEffect(() => {
         const fetchLigas = async () => {
             try {
-                const response = await axios.get('https://poke-liga-backend.vercel.app/ligas'); // Atualize a URL conforme necessário
+                const response = await axios.get('https://poke-liga-backend.vercel.app/ligasAtivas'); // Atualize a URL conforme necessário
                 setLigas(response.data);
             } catch (error) {
                 console.error('Erro ao buscar as ligas:', error);
@@ -85,9 +138,9 @@ const Uploader = () => {
       }
   }
 
-    async function processarPartidas(data, liga) {
+    async function processarPartidas(data, liga, badge) {
         try {
-          const response = await axios.get(`https://poke-liga-backend.vercel.app/processar-liga/${data}/${liga}`);
+          const response = await axios.get(`https://poke-liga-backend.vercel.app/processar-liga/${data}/${liga}/${badge.id}`);
           console.log('Resposta da API:', response.data);
         
         } catch (error) { 
@@ -106,11 +159,29 @@ const Uploader = () => {
       }
   }
 
+  async function sendStandinsToAPI(standins) {
+    try {
+        setLoadingMatches(true);
+        const response = await axios.post('https://poke-liga-backend.vercel.app/standins', standins);
+        console.log('Resposta da API:', response.data);
+        setLoadingMatches(false);
+    } catch (error) {
+        console.error('Erro ao enviar os dados para a API:', error);
+    }
+}
+
     const handleChange = (event) => {
         const selectedLigaId = event.target.value;
         const selectedLiga = ligas.find(liga => liga.id === selectedLigaId);
         setLigaSelecionada(selectedLiga);
     };
+
+    const handleDeckChange = (event) => {
+        const id = event.target.value;
+        const deck = decksGLC.find(deck => deck.id === id);
+        setDeckSelecionado(deck);
+    };
+    
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -122,12 +193,16 @@ const Uploader = () => {
             const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
             const jsonData = xmlToJson(xmlDoc);
-            setDataAtual(new Date(jsonData.tournament.data.startdate['#text']).toISOString().split('T')[0]);
+            const dataEvento = new Date(jsonData.tournament.data.startdate['#text']).toISOString().split('T')[0]
+            setDataAtual(dataEvento);
+            
             const players = formatPlayers(jsonData.tournament.players.player);
             const matches = transformarDados(jsonData.tournament.pods.pod, ligaSelecionada.id);
-
+            const standings = formatStandings(jsonData.tournament.standings, dataEvento, ligaSelecionada.id);
+            
             setPlayers(players);
             setMatches(matches);
+            setStandings(standings);
         };
         reader.readAsText(file);
     };
@@ -173,7 +248,8 @@ const Uploader = () => {
 
         await sendPlayersToAPI(players);
         await sendMatchesToAPI(matches);
-        await processarPartidas(dataAtual, ligaSelecionada.id);
+        await sendStandinsToAPI(standings);
+        await processarPartidas(dataAtual, ligaSelecionada.id, deckSelecionado);
     };
 
     if (loadingPlayers || loadingMatches) {
@@ -183,7 +259,15 @@ const Uploader = () => {
         </div>
       );
     }
-
+const sendRules = () => {  
+    if(ligaSelecionada.tipo === 'GLC' && deckSelecionado.id === 0){
+        return false;
+    }
+    if(ligaSelecionada){
+        return false;
+    }
+    return true;
+}
 
     return (
         <form onSubmit={handleSubmit}>
@@ -202,6 +286,23 @@ const Uploader = () => {
                         <MenuItem key={liga.id} value={liga.id}>{liga.descricao}</MenuItem>
                     ))}
                 </Select>
+                
+            </FormControl>
+            <FormControl fullWidth disabled={!(ligaSelecionada.tipo === 'GLC')}> 
+            <InputLabel id="deck-label">Deck Vencedor</InputLabel>
+                <Select
+                  labelId="liga-label"
+                   id="liga"
+                  value={deckSelecionado && deckSelecionado.id ? deckSelecionado.id : ''}
+                  onChange={handleDeckChange}
+                >
+                    <MenuItem value="">
+                        <em>Selecione o deck vencedor</em>
+                    </MenuItem>
+                    {decksGLC.map(deck => (
+                        <MenuItem key={deck.id} value={deck.id}>{deck.tipo}</MenuItem>
+                    ))}
+                </Select>
             </FormControl>
             {ligaSelecionada && (
                 <div>
@@ -211,7 +312,7 @@ const Uploader = () => {
                 </div>
             )}
             <input type="file" onChange={handleFileUpload} />
-            <button type="submit">Enviar</button>
+            <button type="submit" disabled={sendRules()}>Enviar</button>
         </form>
     );
 };

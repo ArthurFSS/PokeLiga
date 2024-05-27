@@ -12,22 +12,21 @@ import energy_fight from '../assets/energy_fight.png';
 import energy_colorless from '../assets/energy_colorless.png';
 import energy_gray from '../assets/energy_gray.png';
 
-
-
 const badges = [
-  { type:'Fire', active: false, imageUrl: energy_fire},
-  { type:'Water', active: false, imageUrl: energy_water},
-  { type:'Grass', active: false , imageUrl: energy_grass},
-  { type:'Dragon', active: false, imageUrl: energy_dragon},
-  { type:'Psich', active: false, imageUrl: energy_psich},
-  { type:'Dark', active: false, imageUrl: energy_dark},
-  { type:'Metal', active: false, imageUrl: energy_metal},
-  { type:'Fight', active: false, imageUrl: energy_fight},
-  { type:'Eletric', active: false, imageUrl: energy_eletric},
-  { type:'Colorless', active: false, imageUrl: energy_colorless},
+  { id: 2, type:'Fire', active: false, imageUrl: energy_fire},
+  { id: 1, type:'Water', active: false, imageUrl: energy_water},
+  { id: 3, type:'Grass', active: false , imageUrl: energy_grass},
+  { id: 9, type:'Dragon', active: false, imageUrl: energy_dragon},
+  { id: 5, type:'Psich', active: false, imageUrl: energy_psich},
+  { id: 7, type:'Dark', active: false, imageUrl: energy_dark},
+  { id: 8, type:'Metal', active: false, imageUrl: energy_metal},
+  { id: 6, type:'Fight', active: false, imageUrl: energy_fight},
+  { id: 4, type:'Eletric', active: false, imageUrl: energy_eletric},
+  { id: 10, type:'Colorless', active: false, imageUrl: energy_colorless},
 ];
 
-const PlayerCard = ({ name, lastVictoryDate, imageUrl, statuses }) => {
+const PlayerCard = ({ name, lastwindate, imageUrl, badgesPlayer }) => {
+    console.log(badgesPlayer);
     return (
       <Box
         style={{
@@ -42,13 +41,13 @@ const PlayerCard = ({ name, lastVictoryDate, imageUrl, statuses }) => {
         <Grid container direction="column" alignItems="center">
           <Avatar src={imageUrl} style={{ width: '50px', height: '50px' }} />
           <Typography variant="subtitle1" just>{name}</Typography>
-          <Typography variant="caption">{lastVictoryDate}</Typography>
+          <Typography variant="caption">{lastwindate}</Typography>
           <Grid container spacing={1} justifyContent="center" style={{ marginTop: '10px' }}>
             {badges.map((badge, index) => (
               <Grid item key={index} xs={2}>
                 <img
-                  src={statuses[index] ? badge.imageUrl : energy_gray}
-                  alt={`Energy ${badge.type}`}
+                  src={badgesPlayer[index].active ? badge.imageUrl : energy_gray}
+                  alt={`Insignia ${badge.type}`}
                   style={{
                     width: '40px',
                     height: '40px',
