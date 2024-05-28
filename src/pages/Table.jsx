@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -13,8 +14,9 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import React, { useState, useEffect } from 'react';
-import {useParams} from "react-router-dom";
+import { AppBar, Tabs, Tab } from '@material-ui/core';
+import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const useRowStyles = makeStyles({
@@ -95,7 +97,8 @@ export default function Ligas() {
   const [rows, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {id} = useParams();
+  const [tabIndex, setTabIndex] = useState('0');
+  const { id } = useParams();
 
   const urlBase = "https://poke-liga-backend.vercel.app/liga/" + id;
 
@@ -115,10 +118,10 @@ export default function Ligas() {
         setError(error);
         setLoading(false);
       });
-  }, []);
+  }, [id]);
 
   if (loading) {
-    return <LoadingSpinner/>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -129,23 +132,45 @@ export default function Ligas() {
     return <div>No data available</div>;
   }
 
+  const handleChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Posição</TableCell>
-            <TableCell align="left">Nome</TableCell>
-            <TableCell align="right">Pontuação Total</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.posicao} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div>
+      <TabContext value={tabIndex}>
+        <AppBar position="static">
+          <TabList onChange={handleChange} aria-label="full width tabs">
+            <Tab label="Ranking" value="0" />
+            <Tab label="Ultimos Torneios" value="1" />
+          </TabList>
+        </AppBar>
+        <TabPanel value="0">
+          <TableContainer component={Paper}>
+            <Table aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Posição</TableCell>
+                  <TableCell align="left">Nome</TableCell>
+                  <TableCell align="right">Pontuação Total</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <Row key={row.posicao} row={row} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </TabPanel>
+        <TabPanel value="1">
+          <Typography variant="h6" gutterBottom>
+            Novo Conteúdo
+          </Typography>
+          {/* Adicione aqui o novo conteúdo que você deseja criar */}
+        </TabPanel>
+      </TabContext>
+    </div>
   );
 }

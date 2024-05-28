@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, Grid } from '@material-ui/core';
 import PlayerCard from '../components/PlayerCard';
+import andrew from '../assets/Fotos/andrew.jpg';
 
 function formatarData(data) {
     const dataObj = new Date(data);
@@ -9,7 +10,10 @@ function formatarData(data) {
     const ano = dataObj.getFullYear();
     return `${dia}/${mes}/${ano}`;
   }
-
+  function getImage(name){ 
+    if(name === "ANDREW")
+    return andrew;
+  }
 
 export default function PlayerList() {
     const [error, setError] = useState(null);
@@ -17,6 +21,8 @@ export default function PlayerList() {
   
     const urlBase = "https://poke-liga-backend.vercel.app/ligaGlc";
   
+
+
     useEffect(() => {
         fetch(urlBase)
           .then(response => {
@@ -30,7 +36,7 @@ export default function PlayerList() {
               return {
                 name: player.firstname +' '+ player.lastname,
                 lastwindate: formatarData(player.lastwindate),
-                imageUrl: player.imageUrl, // Corrigi a propriedade para player.imageUrl
+                imageUrl: getImage(player.firstname),
                 badgesPlayer: [
                   { id: 1, type: 'Water', active: player.badge1 },
                   { id: 2, type: 'Fire', active: player.badge2 },
