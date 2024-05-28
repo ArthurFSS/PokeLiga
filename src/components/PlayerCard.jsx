@@ -41,7 +41,7 @@ const PlayerCard = ({ name, lastwindate, imageUrl, badgesPlayer }) => {
         <Grid container direction="column" alignItems="center">
           <Avatar src={imageUrl} style={{ width: '100px', height: '100px' }} />
           <Typography variant="subtitle1" just>{name}</Typography>
-          <Typography variant="caption">{lastwindate}</Typography>
+          <Typography variant="caption">Ultima vitória: {lastwindate}</Typography>
           <Grid container spacing={1} justifyContent="center" style={{ marginTop: '10px' }}>
             {badges.map((badge, index) => (
               <Grid item key={index} xs={2}>
