@@ -17,19 +17,28 @@ const decksGLC = [
     {id: 10, tipo: 'Normal'}
 ]
 
+//const url = 'http://localhost:5010/';
+const url = 'https://app.noida.tech/';
+
+const convertDateToISO = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    const date = new Date(year, month - 1, day); // Mês é zero-indexado no JavaScript
+    return date.toISOString(); // Converte para o formato ISO 8601
+  };
+
 function formatPlayers(playersData) {
     return playersData.map(player => {
         return {
-            userid: player['@attributes'].userid,
-            firstname: player.firstname['#text'],
-            lastname: player.lastname['#text'],
-            birthdate: player.birthdate['#text']
+            idPokemon: player['@attributes'].userid,
+            firstName: player.firstname['#text'],
+            lastName: player.lastname['#text'],
+            birthdate: convertDateToISO(player.birthdate['#text'])
         };
     });
 }
 
 function formatStandings(inputJson, data, liga) {
-    // Verifica se inputJson e inputJson.pod existem e são arrays
+    // Verifica se inputJson e inputJson.pod existem e são arrays  
     if (!inputJson || !Array.isArray(inputJson.pod)) {
         throw new TypeError("inputJson.pod is not an array");
     }
@@ -50,11 +59,11 @@ function formatStandings(inputJson, data, liga) {
 
                 // Cria um novo objeto com os dados transformados
                 const transformedPlayer = {
-                    id: id,
+                    idPokemon: id,
                     place: place,
-                    category: category,
+                    categoria: Number(category),
                     data: data,
-                    liga: liga
+                    idLiga: liga
                 };
 
                 // Adiciona o novo objeto ao array de jogadores transformados
@@ -90,11 +99,10 @@ function transformarDados(dados, ligaSelecionada) {
                 player2: player2,
                 outcome: outcome,
                 data: formatarData(data),
-                liga: liga
+                idLiga: liga
             });
         });
     });
-
     return partidas;
 }
 
@@ -117,7 +125,7 @@ const Uploader = () => {
     useEffect(() => {
         const fetchLigas = async () => {
             try {
-                const response = await axios.get('https://poke-liga-backend.vercel.app/ligasAtivas'); // Atualize a URL conforme necessário
+                const response = await axios.get(url + 'liga/ativas'); // Atualize a URL conforme necessário
                 setLigas(response.data);
             } catch (error) {
                 console.error('Erro ao buscar as ligas:', error);
@@ -130,8 +138,7 @@ const Uploader = () => {
     async function sendPlayersToAPI(players) {
       try {
           setLoadingPlayers(true);
-          const response = await axios.post('https://poke-liga-backend.vercel.app/players', players);
-          console.log('Resposta da API:', response.data);
+          const response = await axios.post(url + 'import/players', players);
           setLoadingPlayers(false);
       } catch (error) {
           console.error('Erro ao enviar os dados para a API:', error);
@@ -140,19 +147,16 @@ const Uploader = () => {
 
     async function processarPartidas(data, liga, badge) {
         try {
-          const response = await axios.get(`https://poke-liga-backend.vercel.app/processar-liga/${data}/${liga}/${badge.id}`);
-          console.log('Resposta da API:', response.data);
-        
+          const response = await axios.get( url + `processar-liga/${data}/${liga}/${badge.id}`);     
         } catch (error) { 
           console.error('Erro ao processar as partidas:', error);
         }
     }
   
   async function sendMatchesToAPI(matches) {
-      try {
+    try {
           setLoadingMatches(true);
-          const response = await axios.post('https://poke-liga-backend.vercel.app/partidas', matches);
-          console.log('Resposta da API:', response.data);
+          const response = await axios.post(url + 'import/partidas', matches);
           setLoadingMatches(false);
       } catch (error) {
           console.error('Erro ao enviar os dados para a API:', error);
@@ -162,8 +166,7 @@ const Uploader = () => {
   async function sendStandinsToAPI(standins) {
     try {
         setLoadingMatches(true);
-        const response = await axios.post('https://poke-liga-backend.vercel.app/standins', standins);
-        console.log('Resposta da API:', response.data);
+        const response = await axios.post(url + 'import/standins', standins);
         setLoadingMatches(false);
     } catch (error) {
         console.error('Erro ao enviar os dados para a API:', error);
@@ -195,11 +198,11 @@ const Uploader = () => {
             const jsonData = xmlToJson(xmlDoc);
             const dataEvento = new Date(jsonData.tournament.data.startdate['#text']).toISOString().split('T')[0]
             setDataAtual(dataEvento);
-            
+
             const players = formatPlayers(jsonData.tournament.players.player);
             const matches = transformarDados(jsonData.tournament.pods.pod, ligaSelecionada.id);
             const standings = formatStandings(jsonData.tournament.standings, dataEvento, ligaSelecionada.id);
-            
+
             setPlayers(players);
             setMatches(matches);
             setStandings(standings);
@@ -249,7 +252,6 @@ const Uploader = () => {
         await sendPlayersToAPI(players);
         await sendMatchesToAPI(matches);
         await sendStandinsToAPI(standings);
-        await processarPartidas(dataAtual, ligaSelecionada.id, deckSelecionado);
     };
 
     if (loadingPlayers || loadingMatches) {
@@ -307,8 +309,8 @@ const sendRules = () => {
             {ligaSelecionada && (
                 <div>
                     <Typography>Tipo: {ligaSelecionada.tipo}</Typography>
-                    <Typography>Data Início: {new Date(ligaSelecionada.datainicio).toLocaleDateString('pt-BR')}</Typography>
-                    <Typography>Data Fim: {new Date(ligaSelecionada.datafim).toLocaleDateString('pt-BR')}</Typography>
+                    <Typography>Data Início: {new Date(ligaSelecionada.dataInicio).toLocaleDateString('pt-BR')}</Typography>
+                    <Typography>Data Fim: {new Date(ligaSelecionada.dataFim).toLocaleDateString('pt-BR')}</Typography>
                 </div>
             )}
             <input type="file" onChange={handleFileUpload} />

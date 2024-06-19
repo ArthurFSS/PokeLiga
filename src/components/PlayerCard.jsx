@@ -26,7 +26,6 @@ const badges = [
 ];
 
 const PlayerCard = ({ name, lastwindate, imageUrl, badgesPlayer }) => {
-    console.log(badgesPlayer);
     return (
       <Box
         style={{

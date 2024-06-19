@@ -8,7 +8,9 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
   
-    const urlBase = "https://poke-liga-backend.vercel.app/ligas";
+    //const url = 'http://localhost:5010/';
+    const url = 'https://app.noida.tech/';
+    const urlBase = url + "liga";
   
     useEffect(() => {
       fetch(urlBase)
@@ -47,9 +49,9 @@ const Home = () => {
             key={liga.id}
             organizador={liga.organizador}
             descricao={liga.descricao}
-            tipo={liga.tipo}
-            dataInicio={new Date(liga.datainicio).toLocaleDateString()}
-            dataFim={new Date(liga.datafim).toLocaleDateString()}
+            tipo={liga.tipoNome}
+            dataInicio={new Date(liga.dataInicio).toLocaleDateString()}
+            dataFim={new Date(liga.dataFim).toLocaleDateString()}
             status={liga.finalizada ? 'Finalizada' : 'Em andamento'}
             id={liga.id}
           />

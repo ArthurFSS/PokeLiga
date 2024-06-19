@@ -39,7 +39,7 @@ function Row(props) {
           {row.posicao}
         </TableCell>
         <TableCell align="left">{row.nome}</TableCell>
-        <TableCell align="right">{row.pontuacaoTotal}</TableCell>
+        <TableCell align="right">{row.pontos}</TableCell>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -57,16 +57,77 @@ function Row(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Data</TableCell>
+                    <TableCell>Posição</TableCell>
+                    <TableCell>Resultados</TableCell>
                     <TableCell align="right">Pontuação</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                 <TableBody>
                   {row.history.map((historyRow) => (
                     <TableRow key={historyRow.data}>
                       <TableCell component="th" scope="row">
-                        {historyRow.data}
+                        {new Date(historyRow.data).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell component="th" align="center" scope="row">
+                        {historyRow.place}
+                      </TableCell>
+                      <TableCell component="th" align="center" scope="row">
+                        {historyRow.vitorias + "/" + historyRow.derrotas + "/" + historyRow.empates}
                       </TableCell>
                       <TableCell align="right">{historyRow.pontos}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody> 
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+
+function RowTournament(props) {
+  const { rowsStandins } = props;
+  const [open, setOpen] = useState(false);
+  const classes = useRowStyles();
+  return (
+    <React.Fragment>
+      <TableRow className={classes.root}>
+        <TableCell component="th" scope="row">
+          {new Date(rowsStandins.data).toLocaleDateString()}
+        </TableCell>
+        <TableCell align="center">{rowsStandins.participantes}</TableCell>
+        <TableCell align="center">{rowsStandins.categoria}</TableCell>
+        <TableCell align="right">{rowsStandins.vencedor}</TableCell>
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">Posição</TableCell>
+                    <TableCell align="center">Nome</TableCell>
+                    <TableCell align="center">Resultado</TableCell>
+                    <TableCell align="center">Pontos</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rowsStandins.standins.map((historyRow) => (
+                    <TableRow key={historyRow.data}>
+                      <TableCell align="center" component="th" scope="row">
+                        {historyRow.place}
+                      </TableCell>
+                      <TableCell align="center">{historyRow.nome}</TableCell>
+                      <TableCell align="center">{historyRow.vitorias + "/" + historyRow.derrotas + "/" + historyRow.empates}</TableCell>
+                      <TableCell align="center">{historyRow.pontos}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -79,46 +140,54 @@ function Row(props) {
   );
 }
 
-Row.propTypes = {
-  row: PropTypes.shape({
-    history: PropTypes.arrayOf(
-      PropTypes.shape({
-        pontuacao: PropTypes.number.isRequired,
-        data: PropTypes.string.isRequired,
-      }),
-    ).isRequired,
-    nome: PropTypes.string.isRequired,
-    pontuacao: PropTypes.number.isRequired,
-    posicao: PropTypes.number.isRequired,
-  }).isRequired,
-};
-
 export default function Ligas() {
   const [rows, setData] = useState(null);
+  const [rowsStandins, setStandins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tabIndex, setTabIndex] = useState('0');
   const { id } = useParams();
 
-  const urlBase = "https://poke-liga-backend.vercel.app/liga/" + id;
+  //const url = 'http://localhost:5010/';
+  const url = 'https://app.noida.tech/';
+  const urlBase =  url + "liga/" + id;
+
+  const urlStandins = url + "liga/standins/" + id;
 
   useEffect(() => {
-    fetch(urlBase)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [baseResponse, standinsResponse] = await Promise.all([
+                fetch(urlBase),
+                fetch(urlStandins)
+            ]);
+
+            if (!baseResponse.ok) {
+                throw new Error('Network response was not ok for base data');
+            }
+
+            if (!standinsResponse.ok) {
+                throw new Error('Network response was not ok for standins data');
+            }
+
+            const [baseData, standinsData] = await Promise.all([
+                baseResponse.json(),
+                standinsResponse.json()
+            ]);
+
+            setData(baseData);
+            setStandins(standinsData);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
         }
-        return response.json();
-      })
-      .then(data => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError(error);
-        setLoading(false);
-      });
-  }, [id]);
+    };
+
+    fetchData();
+}, [id]);
+
 
   if (loading) {
     return <LoadingSpinner />;
@@ -165,10 +234,24 @@ export default function Ligas() {
           </TableContainer>
         </TabPanel>
         <TabPanel value="1">
-          <Typography variant="h6" gutterBottom>
-            Novo Conteúdo
-          </Typography>
-          {/* Adicione aqui o novo conteúdo que você deseja criar */}
+        <TableContainer component={Paper}>
+            <Table aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Data</TableCell>
+                  <TableCell align="center">Participantes</TableCell>
+                  <TableCell align="center">Categoria</TableCell>
+                  <TableCell align="right">Vencedor</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rowsStandins.map((rowsStandins) => (
+                  <RowTournament key={rowsStandins.data} rowsStandins={rowsStandins} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </TabPanel>
       </TabContext>
     </div>
