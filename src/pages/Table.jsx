@@ -57,9 +57,9 @@ function Row(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Data</TableCell>
-                    <TableCell>Posição</TableCell>
-                    <TableCell>Resultados</TableCell>
-                    <TableCell align="right">Pontuação</TableCell>
+                    <TableCell>#</TableCell>
+                    <TableCell>Res</TableCell>
+                    <TableCell align="right">Pontos</TableCell>
                   </TableRow>
                 </TableHead>
                  <TableBody>
@@ -95,11 +95,15 @@ function RowTournament(props) {
     <React.Fragment>
       <TableRow className={classes.root}>
         <TableCell component="th" scope="row">
-          {new Date(rowsStandins.data).toLocaleDateString()}
+          {new Date(rowsStandins.data).toLocaleDateString('pt-BR', {
+  year: '2-digit',
+  month: '2-digit',
+  day: '2-digit',
+})}
         </TableCell>
         <TableCell align="center">{rowsStandins.participantes}</TableCell>
         <TableCell align="center">{rowsStandins.categoria}</TableCell>
-        <TableCell align="right">{rowsStandins.vencedor}</TableCell>
+        {/* <TableCell align="right">{rowsStandins.vencedor}</TableCell> */}
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -113,9 +117,9 @@ function RowTournament(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">Posição</TableCell>
+                    <TableCell align="center">#</TableCell>
                     <TableCell align="center">Nome</TableCell>
-                    <TableCell align="center">Resultado</TableCell>
+                    <TableCell align="center">Res.</TableCell>
                     <TableCell align="center">Pontos</TableCell>
                   </TableRow>
                 </TableHead>
@@ -127,7 +131,7 @@ function RowTournament(props) {
                       </TableCell>
                       <TableCell align="center">{historyRow.nome}</TableCell>
                       <TableCell align="center">{historyRow.vitorias + "/" + historyRow.derrotas + "/" + historyRow.empates}</TableCell>
-                      <TableCell align="center">{historyRow.pontos}</TableCell>
+                      <TableCell align="left">{historyRow.pontos}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -221,7 +225,7 @@ export default function Ligas() {
                 <TableRow>
                   <TableCell>Posição</TableCell>
                   <TableCell align="left">Nome</TableCell>
-                  <TableCell align="right">Pontuação Total</TableCell>
+                  <TableCell align="right">Pontos</TableCell>
                   <TableCell />
                 </TableRow>
               </TableHead>
@@ -239,9 +243,9 @@ export default function Ligas() {
               <TableHead>
                 <TableRow>
                   <TableCell>Data</TableCell>
-                  <TableCell align="center">Participantes</TableCell>
+                  <TableCell align="center">Quantidade</TableCell>
                   <TableCell align="center">Categoria</TableCell>
-                  <TableCell align="right">Vencedor</TableCell>
+                  {/* <TableCell align="right">Vencedor</TableCell> */}
                   <TableCell />
                 </TableRow>
               </TableHead>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CardLiga from "../components/CardLiga";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { Height } from "@material-ui/icons";
 
 
 const Home = () => {
@@ -41,7 +42,7 @@ const Home = () => {
     if (!ligas || ligas.length === 0) {
       return <div>No data available</div>;
     }
-
+  
     return (
       <div>
         {ligas.map(liga => (
