@@ -25,6 +25,9 @@ const useRowStyles = makeStyles({
       borderBottom: 'unset',
     },
   },
+  tabPanel: {
+    padding: '0px',
+  },
 });
 
 function Row(props) {
@@ -117,21 +120,21 @@ function RowTournament(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">#</TableCell>
+                    <TableCell align="Left">#</TableCell>
                     <TableCell align="center">Nome</TableCell>
                     <TableCell align="center">Res.</TableCell>
-                    <TableCell align="center">Pontos</TableCell>
+                    <TableCell align="right">Pontos</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rowsStandins.standins.map((historyRow) => (
                     <TableRow key={historyRow.data}>
-                      <TableCell align="center" component="th" scope="row">
+                      <TableCell align="Left"  >
                         {historyRow.place}
                       </TableCell>
                       <TableCell align="center">{historyRow.nome}</TableCell>
                       <TableCell align="center">{historyRow.vitorias + "/" + historyRow.derrotas + "/" + historyRow.empates}</TableCell>
-                      <TableCell align="left">{historyRow.pontos}</TableCell>
+                      <TableCell align="right">{historyRow.pontos}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -151,11 +154,11 @@ export default function Ligas() {
   const [error, setError] = useState(null);
   const [tabIndex, setTabIndex] = useState('0');
   const { id } = useParams();
-
+useRowStyles
   //const url = 'http://localhost:5010/';
   const url = 'https://app.noida.tech/';
   const urlBase =  url + "liga/" + id;
-
+  const classes = useRowStyles();
   const urlStandins = url + "liga/standins/" + id;
 
   useEffect(() => {
@@ -218,7 +221,7 @@ export default function Ligas() {
             <Tab label="Ultimos Torneios" value="1" />
           </TabList>
         </AppBar>
-        <TabPanel value="0">
+        <TabPanel className={classes.tabPanel} value="0">
           <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
               <TableHead>
@@ -237,7 +240,7 @@ export default function Ligas() {
             </Table>
           </TableContainer>
         </TabPanel>
-        <TabPanel value="1">
+        <TabPanel className={classes.tabPanel} value="1">
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
               <TableHead>
