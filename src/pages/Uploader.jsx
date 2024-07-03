@@ -38,26 +38,18 @@ function formatPlayers(playersData) {
 }
 
 function formatStandings(inputJson, data, liga) {
-    // Verifica se inputJson e inputJson.pod existem e são arrays  
     if (!inputJson || !Array.isArray(inputJson.pod)) {
         throw new TypeError("inputJson.pod is not an array");
     }
 
-    // Inicializa um array vazio para armazenar os jogadores no novo formato
     const transformedPlayers = [];
-
-    // Percorre cada item do array "pod" no JSON de entrada
     inputJson.pod.forEach(podItem => {
         const category = podItem['@attributes'].category;
-
-        // Verifica se podItem.player existe e é um array
         if (Array.isArray(podItem.player)) {
-            // Percorre cada jogador no array "player" do pod atual
             podItem.player.forEach(player => {
                 const id = player['@attributes'].id;
                 const place = player['@attributes'].place;
 
-                // Cria um novo objeto com os dados transformados
                 const transformedPlayer = {
                     idPokemon: id,
                     place: place,
@@ -66,10 +58,26 @@ function formatStandings(inputJson, data, liga) {
                     idLiga: liga
                 };
 
-                // Adiciona o novo objeto ao array de jogadores transformados
                 transformedPlayers.push(transformedPlayer);
             });
         }
+
+        if(!Array.isArray(podItem.player) && podItem.player){
+           const player = podItem.player;
+            const id = player['@attributes'].id;
+                const place = player['@attributes'].place;
+
+                const transformedPlayer = {
+                    idPokemon: id,
+                    place: place,
+                    categoria: Number(category),
+                    data: data,
+                    idLiga: liga
+                };
+
+                transformedPlayers.push(transformedPlayer);
+        }
+
     });
     return  transformedPlayers;
 }
@@ -202,7 +210,7 @@ const Uploader = () => {
             const players = formatPlayers(jsonData.tournament.players.player);
             const matches = transformarDados(jsonData.tournament.pods.pod, ligaSelecionada.id);
             const standings = formatStandings(jsonData.tournament.standings, dataEvento, ligaSelecionada.id);
-
+            console.log(standings);
             setPlayers(players);
             setMatches(matches);
             setStandings(standings);

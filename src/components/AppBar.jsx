@@ -51,6 +51,9 @@ export default function ButtonAppBar() {
           <Typography variant="h6" >
             <Link to="/" className={classes.inicio}>Inicio</Link>
           </Typography>
+          {/* <Typography variant="h6" >
+            <Link to="/Login" className={classes.inicio}>Entrar</Link>
+          </Typography> */}
         </Toolbar>
       </AppBar>
     </div>
