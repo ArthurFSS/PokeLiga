@@ -10,7 +10,7 @@ const Home = () => {
     const [error, setError] = useState(null);
   
     //const url = 'http://localhost:5010/';
-    const url = 'https://app.noida.tech/';
+    const url = 'https://atwiiister.meudesk.top/';
     const urlBase = url + "liga";
   
     useEffect(() => {

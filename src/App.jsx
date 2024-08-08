@@ -1,16 +1,16 @@
-import Table from './pages/Table'
-import AppBar from './components/AppBar'
-import React from 'react';
-import { Outlet } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import AppBar from './components/AppBar';
 
 function App() {
+  const [user, setUser] = useState(null);
 
   return (
     <div>
-      <AppBar/>
-      <Outlet/>
+      <AppBar user={user} />
+      <Outlet context={{ user, setUser }} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

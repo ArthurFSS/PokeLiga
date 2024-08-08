@@ -3,16 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import  IconePokeliga from '../assets/pokeliga.png';
+import IconePokeliga from '../assets/pokeliga.png';
 import { Link } from 'react-router-dom';
-import Icon from '@material-ui/core/Icon';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
   },
   title: {
     marginLeft: 15,
@@ -22,38 +18,43 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 15,
     flexGrow: 1,
     color: 'white',
-    textDecoration: 'none'
+    textDecoration: 'none',
   },
   appBar: {
     height: 64,
-    justifyContent: 'center', // Centraliza o conteúdo horizontalmente
+    justifyContent: 'center',
   },
   logo: {
     marginTop: 5,
-    width: 50, 
+    width: 50,
     height: 'auto',
-    verticalAlign: 'middle', // Adicionando esta linha
+    verticalAlign: 'middle',
   },
-  
 }));
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar({ user }) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-            <img src={IconePokeliga} alt=""className={classes.logo}/>
+          <img src={IconePokeliga} alt="" className={classes.logo} />
           <Typography variant="h6" className={classes.title}>
             PokeLiga
           </Typography>
-          <Typography variant="h6" >
+          <Typography variant="h6">
             <Link to="/" className={classes.inicio}>Inicio</Link>
           </Typography>
-          {/* <Typography variant="h6" >
-            <Link to="/Login" className={classes.inicio}>Entrar</Link>
-          </Typography> */}
+          {/* {user ? (
+            <Typography variant="h6">
+              <Link to="/profile" className={classes.inicio}>Profile</Link>
+            </Typography>
+          ) : (
+            <Typography variant="h6">
+              <Link to="/login" className={classes.inicio}>Entrar</Link>
+            </Typography>
+          )} */}
         </Toolbar>
       </AppBar>
     </div>

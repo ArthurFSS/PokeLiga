@@ -18,7 +18,7 @@ const decksGLC = [
 ]
 
 //const url = 'http://localhost:5010/';
-const url = 'https://app.noida.tech/';
+const url = 'https://atwiiister.meudesk.top/';
 
 const convertDateToISO = (dateString) => {
     const [day, month, year] = dateString.split('/');

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleOAuthProvider, GoogleLogin, googleLogout } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { Button, Typography, makeStyles, TextField, Grid } from '@material-ui/core';
+import { useOutletContext } from 'react-router-dom';
 
 const clientId = "646961153048-87jqtp39jd477cuah8tiq29ajmkmet52.apps.googleusercontent.com";
 const url = 'http://localhost:5010/';
@@ -30,16 +31,20 @@ const useStyles = makeStyles(theme => ({
 
 const Login = () => {
     const classes = useStyles();
+    const { user, setUser } = useOutletContext();
 
-    const [user, setUser] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false);
     const [birthDate, setBirthDate] = useState('');
     const [idPokemon, setIdPokemon] = useState('');
-	const [token, setToken] = useState('');
+    const [token, setToken] = useState('');
+
+    useEffect(() => {
+        googleLogout();
+    }, []);
 
     const onSuccess = (response) => {
         handleLogin(response.credential);
-		setToken(response.credential);
+        setToken(response.credential);
         const decoded = jwtDecode(response.credential);
         console.log('Login Success:', decoded);
         setUser(decoded);
@@ -74,7 +79,7 @@ const Login = () => {
             const response = await axios.post(url + 'user/create', {
                 birthDate,
                 idPokemon,
-				token,
+                token,
             });
             console.log('Registration Completed:', response.data);
             setShowAdditionalFields(false);
@@ -84,52 +89,51 @@ const Login = () => {
     };
 
     return (
-        <GoogleOAuthProvider clientId={clientId}>
-            <div className={classes.loginContainer}>
-                {user ? (
-                    <div className={classes.userContainer}>
-                        <Typography variant="h5">Welcome, {user.name}</Typography>
-                        <Button className={classes.logoutButton} variant="contained" onClick={handleLogout}>Logout</Button>
-                    </div>
-                ) : (
-                    <Grid container justify="center">
-                        <Grid item>
-                            <GoogleLogin
-                                onSuccess={onSuccess}
-                                onError={onFailure}
-                                cookiePolicy="single_host_origin"
-                            />
-                        </Grid>
+        <div className={classes.loginContainer}>
+            {user ? (
+                <div className={classes.userContainer}>
+                    <Typography variant="h5">Welcome, {user.name}</Typography>
+                    <Button className={classes.logoutButton} variant="contained" onClick={handleLogout}>Logout</Button>
+                </div>
+            ) : (
+                <Grid container justify="center">
+                    <Grid item>
+                        <GoogleLogin
+                            onSuccess={onSuccess}
+                            onError={onFailure}
+                            cookiePolicy="single_host_origin"
+                        />
                     </Grid>
-                )}
-                {showAdditionalFields && (
-                    <Grid container justify="center" className={classes.additionalFields}>
-                        <Grid item xs={12} sm={6}>
-                            <Typography variant="subtitle1">Data de Nascimento:</Typography>
-                            <TextField
-                                type="date"
-                                value={birthDate}
-                                onChange={(e) => setBirthDate(e.target.value)}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Typography variant="subtitle1">ID Pokemon:</Typography>
-                            <TextField
-                                type="number"
-                                value={idPokemon}
-                                onChange={(e) => setIdPokemon(e.target.value)}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} style={{ marginTop: 16 }}>
-                            <Button variant="contained" color="primary" onClick={handleCompleteRegistration}>Complete Registration</Button>
-                        </Grid>
+                </Grid>
+            )}
+            {showAdditionalFields && (
+                <Grid container justify="center" className={classes.additionalFields}>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1">Data de Nascimento:</Typography>
+                        <TextField
+                            type="date"
+                            value={birthDate}
+                            onChange={(e) => setBirthDate(e.target.value)}
+                            fullWidth
+                        />
                     </Grid>
-                )}
-            </div>
-        </GoogleOAuthProvider>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1">ID Pokemon:</Typography>
+                        <TextField
+                            type="number"
+                            value={idPokemon}
+                            onChange={(e) => setIdPokemon(e.target.value)}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} style={{ marginTop: 16 }}>
+                        <Button variant="contained" color="primary" onClick={handleCompleteRegistration}>Complete Registration</Button>
+                    </Grid>
+                </Grid>
+            )}
+        </div>
     );
 };
 
 export default Login;
+
