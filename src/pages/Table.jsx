@@ -18,6 +18,7 @@ import { AppBar, Tabs, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
+import PremiacaoCard from '../components/PremiacaoCard';
 
 const useRowStyles = makeStyles({
   root: {
@@ -149,25 +150,29 @@ function RowTournament(props) {
 
 export default function Ligas() {
   const [rows, setData] = useState(null);
+  const [premiacao, setPremiacao] = useState(null);
   const [rowsStandins, setStandins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tabIndex, setTabIndex] = useState('0');
   const { id } = useParams();
+
 useRowStyles
-  //const url = 'http://localhost:5010/';
-  const url = 'https://atwiiister.meudesk.top/';
+  const url = 'http://localhost:5010/';
+  //const url = 'https://atwiiister.meudesk.top/';
   const urlBase =  url + "liga/" + id;
   const classes = useRowStyles();
   const urlStandins = url + "liga/standins/" + id;
+  const urlPremiacao = url + "liga/caixa/" + id;
 
   useEffect(() => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [baseResponse, standinsResponse] = await Promise.all([
+            const [baseResponse, standinsResponse, premiacaoResponse] = await Promise.all([
                 fetch(urlBase),
-                fetch(urlStandins)
+                fetch(urlStandins),
+                fetch(urlPremiacao)
             ]);
 
             if (!baseResponse.ok) {
@@ -178,13 +183,19 @@ useRowStyles
                 throw new Error('Network response was not ok for standins data');
             }
 
-            const [baseData, standinsData] = await Promise.all([
+            if (!premiacaoResponse.ok) {
+              throw new Error('Network response was not ok for standins data');
+          }
+
+            const [baseData, standinsData, premiacaoResp] = await Promise.all([
                 baseResponse.json(),
-                standinsResponse.json()
+                standinsResponse.json(),
+                premiacaoResponse.json(),
             ]);
 
             setData(baseData);
             setStandins(standinsData);
+            setPremiacao(premiacaoResp)
         } catch (error) {
             setError(error);
         } finally {
@@ -214,6 +225,7 @@ useRowStyles
 
   return (
     <div>
+      <PremiacaoCard value={premiacao}/>
       <TabContext value={tabIndex}>
         <AppBar position="static">
           <TabList onChange={handleChange} aria-label="full width tabs">
