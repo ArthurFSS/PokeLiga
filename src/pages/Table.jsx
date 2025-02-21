@@ -192,6 +192,7 @@ useRowStyles
             setData(baseData);
             setStandins(standinsData);
             setPremiacao(premiacaoResp)
+            
         } catch (error) {
             setError(error);
         } finally {
