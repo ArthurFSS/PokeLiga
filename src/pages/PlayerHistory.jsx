@@ -69,34 +69,42 @@ const PlayerHistory = () => {
       </Box>
 
       {/* Input e Botão de Buscar */}
-      <Box display="flex" justifyContent="center" alignItems="center" mb={4} gap={2}
-      
-      style={{ 
-        marginTop: '20px',
-        marginBottom: '10px'
-       }}
-      >
-        <TextField
-          type="number"
-          value={pokeId}
-          onChange={(e) => setPokeId(e.target.value)}
-          label="Digite o PokeID"
-          variant="outlined"
-          fullWidth
-        />
-        <Button
-          onClick={handleSearch}
-          variant="contained"
-          color="primary"
-          size="large"
-          style={{
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-            marginTop: '10px',
-          }}
-        >
-          Buscar
-        </Button>
-      </Box>
+{/* Input e Botão de Buscar */}
+<Box 
+  display="flex" 
+  flexDirection="column" 
+  justifyContent="center" 
+  alignItems="center" 
+  mb={4} 
+  gap={2}
+  style={{ 
+    marginTop: '20px',
+    marginBottom: '10px'
+  }}
+>
+  <TextField
+    type="number"
+    value={pokeId}
+    onChange={(e) => setPokeId(e.target.value)}
+    label="Digite o PokeID"
+    variant="outlined"
+    fullWidth
+  />
+  <Button
+    onClick={handleSearch}
+    variant="contained"
+    color="primary"
+    size="large"
+    style={{
+      boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+      marginTop: '10px', // Adicionado para espaçamento
+      width: '100%', // Botão ocupa toda a largura do input
+    }}
+  >
+    Buscar
+  </Button>
+</Box>
+
 
       {/* Mensagens de Loading e Erro */}
       {loading && (
@@ -114,7 +122,7 @@ const PlayerHistory = () => {
         <Card elevation={3}>
           <CardContent>
             <Typography variant="h4" component="h2" color="primary" gutterBottom>
-              {playerData.PlayerNome}
+              {playerData.playerNome}
             </Typography>
             <Box component="ul" style={{ listStyle: 'none', paddingLeft: 0 }}>
               <li style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
