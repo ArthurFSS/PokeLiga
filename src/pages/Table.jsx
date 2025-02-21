@@ -158,8 +158,8 @@ export default function Ligas() {
   const { id } = useParams();
 
 useRowStyles
-  const url = 'http://localhost:5010/';
-  //const url = 'https://atwiiister.meudesk.top/';
+  //const url = 'http://localhost:5010/';
+  const url = 'https://atwiiister.meudesk.top/';
   const urlBase =  url + "liga/" + id;
   const classes = useRowStyles();
   const urlStandins = url + "liga/standins/" + id;
