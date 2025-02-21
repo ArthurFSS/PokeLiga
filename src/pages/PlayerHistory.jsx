@@ -118,18 +118,23 @@ const PlayerHistory = () => {
 {playerData && (
   <Card elevation={3}>
     <CardContent>
-      <Typography variant="h4" component="h2" color="primary" gutterBottom>
+      <Typography variant="h4" component="h2" color="primary" gutterBottom        
+      style={{
+            marginBottom: '-30px',
+          }}>
         {playerData.playerNome}
       </Typography>
       
 {playerData && (
-      <Box mt={4}>
+      <Box mt={4}     style={{
+        marginBottom: '-40px',
+      }}>
         <PieChartResults
           vitorias={playerData.totalVitorias}
           derrotas={playerData.totalDerrotas}
           empates={playerData.totalEmpates}
         />
-      </Box>
+      </Box >
 )}
       <Box component="ul" style={{ listStyle: 'none', paddingLeft: 0 }}>
         <li style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
