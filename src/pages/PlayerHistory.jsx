@@ -205,7 +205,7 @@ const PlayerHistory = () => {
               </Typography>
             ))}
           <Typography variant="body2" color="textSecondary" style={{ marginLeft: '16px', fontStyle: 'italic' }}>
-            Total de Derrotas para esses jogadores: {playerData.totalDerrotasParaEssesPlayers}
+            Total de Derrotas destes jogadores: {playerData.totalDerrotasParaEssesPlayers}
           </Typography>
         </li>
 
