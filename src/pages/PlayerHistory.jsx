@@ -122,11 +122,7 @@ const PlayerHistory = () => {
         {playerData.playerNome}
       </Typography>
       
-
-
 {playerData && (
-  <Card elevation={3} style={{ marginTop: '20px' }}>
-      {/* Gráfico de Pizza */}
       <Box mt={4}>
         <PieChartResults
           vitorias={playerData.totalVitorias}
@@ -134,9 +130,7 @@ const PlayerHistory = () => {
           empates={playerData.totalEmpates}
         />
       </Box>
-  </Card>
 )}
-
       <Box component="ul" style={{ listStyle: 'none', paddingLeft: 0 }}>
         <li style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
           <span
