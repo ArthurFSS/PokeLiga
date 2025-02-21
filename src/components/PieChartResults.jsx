@@ -48,6 +48,8 @@ const PieChartResults = ({ vitorias, derrotas, empates }) => {
           outerRadius={100}
           fill="#8884d8"
           label={renderCustomizedLabel}
+          stroke="#000"         // Cor das bordas (preto)
+          strokeWidth={2}       // Espessura das bordas
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index]} />
