@@ -183,10 +183,6 @@ useRowStyles
                 throw new Error('Network response was not ok for standins data');
             }
 
-            if (!premiacaoResponse.ok) {
-              premiacaoResponse = {};
-          }
-
             const [baseData, standinsData, premiacaoResp] = await Promise.all([
                 baseResponse.json(),
                 standinsResponse.json(),
