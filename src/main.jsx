@@ -9,6 +9,7 @@ import Table from './pages/Table';
 import TableGlc from './pages/TableGlc';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import PlayerHistory from './pages/PlayerHistory';
 import PrivateRoute from './components/PrivateRoute';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
@@ -23,6 +24,8 @@ const router = createBrowserRouter([
       { path: "/upload", element: <Uploader /> },
       { path: "/ligaGlc/:id", element: <TableGlc /> },
       { path: "/login", element: <Login /> },
+      { path: "/history", element: <PlayerHistory /> },
+
       {
         path: "/profile",
         element: (

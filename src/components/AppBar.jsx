@@ -44,6 +44,9 @@ export default function ButtonAppBar({ user }) {
             PokeLiga
           </Typography>
           <Typography variant="h6">
+            <Link to="/history" className={classes.inicio}>Histórico</Link>
+          </Typography>
+          <Typography variant="h6">
             <Link to="/" className={classes.inicio}>Inicio</Link>
           </Typography>
           {/* {user ? (
