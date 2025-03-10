@@ -91,13 +91,22 @@ function transformarDados(dados, ligaSelecionada) {
 
         const matchesFiltrados = matches.filter(match => {
             const outcome = parseInt(match['@attributes'].outcome, 10);
-            return outcome === 1 || outcome === 2 || outcome === 3;
+            return outcome === 1 || outcome === 2 || outcome === 3 || outcome === 5;
         });
 
         matchesFiltrados.forEach((match) => {
+            console.log(match);
             const outcome = parseInt(match['@attributes'].outcome, 10);
-            const player1 = parseInt(match.player1['@attributes'].userid, 10);
-            const player2 = parseInt(match.player2['@attributes'].userid, 10);
+            var player1;
+            var player2;
+            if(outcome === 5){
+                player1 = parseInt(match.player['@attributes'].userid, 10);
+                player2 = parseInt(match.player['@attributes'].userid, 10);
+            } else {
+                player1 = parseInt(match.player1['@attributes'].userid, 10);
+                player2 = parseInt(match.player2['@attributes'].userid, 10);
+            }
+
             const data = match.timestamp['#text'].split(' ')[0];
             const liga = ligaSelecionada;
 
@@ -210,7 +219,12 @@ const Uploader = () => {
             const players = formatPlayers(jsonData.tournament.players.player);
             const matches = transformarDados(jsonData.tournament.pods.pod, ligaSelecionada.id);
             const standings = formatStandings(jsonData.tournament.standings, dataEvento, ligaSelecionada.id);
+            console.log('standings');
             console.log(standings);
+            console.log('Players');
+            console.log(players);
+            console.log('Matches');
+            console.log(matches);
             setPlayers(players);
             setMatches(matches);
             setStandings(standings);
