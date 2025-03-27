@@ -31,10 +31,42 @@ const useRowStyles = makeStyles({
   },
 });
 
+const processTournamentPoints = (history) => {
+  // Se tiver 5 ou menos torneios, retorna todos como verdes
+  if (history.length <= 5) {
+    return history.map(item => ({
+      ...item,
+      pointColor: 'green'
+    }));
+  }
+
+  // Ordena por pontos em ordem crescente
+  const sortedHistory = [...history].sort((a, b) => a.pontos - b.pontos);
+  
+  // Pega a pontuação mais baixa (primeiro item após ordenação)
+  const lowestScore = sortedHistory[0].pontos;
+  
+  // Marca todos como verdes e o menor como vermelho
+  return sortedHistory.map((item, index) => ({
+    ...item,
+    pointColor: index === 0 ? 'red' : 'green'
+  }));
+};
+
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = useState(false);
   const classes = useRowStyles();
+
+  // Processa os pontos do histórico
+  const processedHistory = processTournamentPoints(row.history);
+  
+  // Calcula os pontos totais considerando a regra
+  const totalPoints = processedHistory.length > 5 
+    ? processedHistory
+        .filter(item => item.pointColor === 'green')
+        .reduce((sum, item) => sum + item.pontos + 3, 0)
+    : row.pontos;
 
   return (
     <React.Fragment>
@@ -43,7 +75,7 @@ function Row(props) {
           {row.posicao}
         </TableCell>
         <TableCell align="left">{row.nome}</TableCell>
-        <TableCell align="right">{row.pontos}</TableCell>
+        <TableCell align="right">{totalPoints}</TableCell>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -66,8 +98,8 @@ function Row(props) {
                     <TableCell align="right">Pontos</TableCell>
                   </TableRow>
                 </TableHead>
-                 <TableBody>
-                  {row.history.map((historyRow) => (
+                <TableBody>
+                  {processedHistory.map((historyRow) => (
                     <TableRow key={historyRow.data}>
                       <TableCell component="th" scope="row">
                         {new Date(historyRow.data).toLocaleDateString()}
@@ -78,10 +110,12 @@ function Row(props) {
                       <TableCell component="th" align="center" scope="row">
                         {historyRow.vitorias + "/" + historyRow.derrotas + "/" + historyRow.empates}
                       </TableCell>
-                      <TableCell align="right">{historyRow.pontos}</TableCell>
+                      <TableCell align="right" style={{ color: historyRow.pointColor }}>
+                        {historyRow.pontos}
+                      </TableCell>
                     </TableRow>
                   ))}
-                </TableBody> 
+                </TableBody>
               </Table>
             </Box>
           </Collapse>
